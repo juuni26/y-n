@@ -10,9 +10,9 @@ const routes = [
   {
     method: 'GET',
     path: '/',
-    handler: (req,h) => "hello",
-  }
-  , {
+    handler: (req, h) => 'hello',
+  },
+  {
     method: 'POST',
     path: '/notes',
     handler: addNote,
@@ -36,8 +36,7 @@ const routes = [
     method: 'DELETE',
     path: '/notes/{id}',
     handler: deleteNote,
-  }
+  },
 ];
-
 
 module.exports = routes;

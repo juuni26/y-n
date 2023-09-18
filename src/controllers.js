@@ -1,5 +1,5 @@
 const { nanoid } = require('nanoid');
-const notes = require('./notes')
+const notes = require('./notes');
 
 const addNote = (request, h) => {
   const { title, tags, body } = request.payload;
@@ -47,16 +47,16 @@ const getNotes = (request, h) => ({
 const getNote = (request, h) => {
   const { id } = request.params;
 
-  note = notes.filter(note => note.id === id)[0];
+  const note = notes.filter((data) => data.id === id)[0];
 
   if (note) {
     return {
       status: 'success',
       data: {
         note,
-      }
+      },
 
-    }
+    };
   }
 
   return h.response({
@@ -68,17 +68,17 @@ const getNote = (request, h) => {
 const updateNote = (request, h) => {
   const { id } = request.params;
 
-  index = notes.findIndex(note => note.id === id);
+  const index = notes.findIndex((note) => note.id === id);
 
   if (index !== -1) {
     const { title, tags, body } = request.payload;
-    const updatedAt = new Date().toISOString()
+    const updatedAt = new Date().toISOString();
     notes[index] = {
       ...notes[index],
       title,
       tags,
       body,
-      updatedAt
+      updatedAt,
     };
     return h.response({
       status: 'success',
@@ -89,15 +89,15 @@ const updateNote = (request, h) => {
     status: 'fail',
     message: 'Gagal memperbarui catatan. Id tidak ditemukan',
   }).code(404);
-}
+};
 
 const deleteNote = (request, h) => {
   const { id } = request.params;
 
-  index = notes.findIndex(note => note.id === id);
+  const index = notes.findIndex((note) => note.id === id);
 
   if (index !== -1) {
-    notes.splice(index, 1)
+    notes.splice(index, 1);
 
     return h.response({
       status: 'success',
@@ -108,6 +108,8 @@ const deleteNote = (request, h) => {
     status: 'fail',
     message: 'Catatan gagal dihapus. Id tidak ditemukan',
   }).code(404);
-}
+};
 
-module.exports = { addNote, getNotes, getNote, updateNote, deleteNote }
+module.exports = {
+  addNote, getNotes, getNote, updateNote, deleteNote,
+};
