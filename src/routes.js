@@ -1,4 +1,4 @@
-const { 
+const {
   addNote,
   getNotes,
   getNote,
@@ -8,6 +8,11 @@ const {
 
 const routes = [
   {
+    method: 'GET',
+    path: '/',
+    handler: (req,h) => "hello",
+  }
+  , {
     method: 'POST',
     path: '/notes',
     handler: addNote,
