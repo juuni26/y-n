@@ -44,111 +44,70 @@ const getNotes = (request, h) => ({
   },
 });
 
-// server.route({
-//   method: 'GET',
-//   path: '/notes/{id?}',
-//   handler(request, h) {
-//     const newNotes = notes.filter((data) => data.id === request.params.id);
-//     if (newNotes) {
-//       const responseSuccess = {
-//         status: 'success',
-//         data: {
-//           notes: newNotes,
-//         },
-//       };
-//       return h.response(responseSuccess).code(200);
-//     }
-//     const response = {
-//       status: 'fail',
-//       message: 'Catatan tidak ditemukan',
-//     };
-//     return h.response(response).code(404);
-//   },
-// });
+const getNote = (request, h) => {
+  const { id } = request.params;
 
-// server.route({
-//   method: 'PUT',
-//   path: '/notes/{id?}',
-//   handler(request, h) {
-//     const findNote = notes.filter((data) => data.id === request.params.id);
-//     if (findNote.length === 0) {
-//       const response_fail = {
-//         "status": "fail",
-//         "message": "Gagal memperbarui catatan. Id catatan tidak ditemukan"
-//       }
-//       return h.response(response_fail).code(404)
-//     }
+  note = notes.filter(note => note.id === id)[0];
 
-//     const newNotes = notes.map((data) => {
-//       if (data.id === request.params.id) {
-//         return {
-//           id: data.id,
-//           createdAt: data.createdAt,
-//           updatedAt: data.updatedAt,
-//           title: request.body.title,
-//           tags: request.body.tags,
-//           body: request.body.body,
-//         }
-//       }
-//       else {
-//         return data
-//       }
-//     });
-//     notes = newNotes;
-//     if (newNotes) {
-//       const responseSuccess = {
-//         status: 'success',
-//         message: 'Catatan berhasil diperbaharui'
-//       };
-//       return h.response(responseSuccess).code(200);
-//     }
-//   },
-// });
+  if (note) {
+    return {
+      status: 'success',
+      data: {
+        note,
+      }
 
-// server.route({
-//   method: 'DELETE',
-//   path: '/notes/{id?}',
-//   handler(request, h) {
-//     const findNote = notes.filter((data) => data.id === request.params.id);
-//     if (findNote.length === 0) {
-//       const response_fail = {
-//         "status": 'fail',
-//         "message": 'Catatan gagal dihapus. Id catatan tidak ditemukan'
-//       }
-//       return h.response(response_fail).code(404)
-//     }
+    }
+  }
 
-//     const newNotes = notes.filter((data) => data.id != request.params.id);
-//     notes = newNotes;
-//     const responseSuccess = {
-//       status: 'success',
-//       message: 'Catatan berhasil dihapus'
-//     };
-//     return h.response(responseSuccess).code(200);
-//   },
-// });
+  return h.response({
+    status: 'fail',
+    message: 'Catatan tidak ditemukan',
+  }).code(404);
+};
 
-// server.route({
-//   method: 'GET',
-//   path: '/notes',
-//   handler: (request, h) => {
-//     try {
-//       const response = {
-//         status: 'success',
-//         data: {
-//           notes,
-//         },
-//       };
-//       return h.response(response).code(200);
-//     } catch (err) {
-//       const error = {
-//         status: 'error',
-//         message: 'Error server',
-//       };
-//       return h.response(error).code(500);
-//     }
-//   },
-// });
+const updateNote = (request, h) => {
+  const { id } = request.params;
 
+  index = notes.findIndex(note => note.id === id);
 
-module.exports = { addNote,getNotes }
+  if (index !== -1) {
+    const { title, tags, body } = request.payload;
+    const updatedAt = new Date().toISOString()
+    notes[index] = {
+      ...notes[index],
+      title,
+      tags,
+      body,
+      updatedAt
+    };
+    return h.response({
+      status: 'success',
+      message: 'Catatan berhasil diperbarui',
+    }).code(200);
+  }
+  return h.response({
+    status: 'fail',
+    message: 'Gagal memperbarui catatan. Id tidak ditemukan',
+  }).code(404);
+}
+
+const deleteNote = (request, h) => {
+  const { id } = request.params;
+
+  index = notes.findIndex(note => note.id === id);
+
+  if (index !== -1) {
+    notes.splice(index, 1)
+
+    return h.response({
+      status: 'success',
+      message: 'Catatan berhasil dihapus',
+    }).code(200);
+  }
+  return h.response({
+    status: 'fail',
+    message: 'Catatan gagal dihapus. Id tidak ditemukan',
+  }).code(404);
+}
+
+module.exports = { addNote, getNotes, getNote, updateNote, deleteNote }
